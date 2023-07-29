@@ -65,9 +65,9 @@ button:hover {
   </style>
 </head>
 <body>
-  <div class="signup-container">
+  <div class="signup-container"> 
     <h2>Sign Up</h2>
-    <form>
+    <form id="signup" action="/signup" method="post">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" required>
       <!-- <label for="email">Email</label>
@@ -78,7 +78,7 @@ button:hover {
       <input type="password" id="confirm-password" name="confirm-password" required>
       <button type="submit">Sign Up</button>
     </form>
-    <p class="already-signed-up">Already signed up? <a href="login.html">Login</a></p>
+    <p class="already-signed-up">Already signed up? <a href="/login">Login</a></p>
   </div>
 </body>
 </html>
