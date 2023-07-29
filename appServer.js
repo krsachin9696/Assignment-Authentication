@@ -35,8 +35,17 @@ app.post("/login", function(req, res) {
     const username = req.body.username;
     const password = req.body.password;
 
+    readFromDBFile((readError, existingData) => {
+        if (readError) {
+          return res.status(500).send("Error reading file");
+        }
+    
+        // Find the user with the given username and password in the existing data
+        const user = existingData.find((user) => user.username === username && user.password === password);
+    
     // console.log(username);
-    if(username === "shan" && password === "shan") {
+    // if(username === "shan" && password === "shan") {
+        if(user) {
         // res.status(200).send("success");
         req.session.isLoggedIn = true;
         req.session.username = username;
@@ -45,6 +54,7 @@ app.post("/login", function(req, res) {
     }
 
     res.status(401).send("error");
+});
 });
 
 app.get("/signup", function (req, res) {
@@ -56,23 +66,7 @@ app.get("/client.js", function (req, res) {
 });
 
 
-// app.post("/signup", function (req, res) {
 
-//     console.log(req.body);
-
-//     // Convert the data to JSON string
-//     const jsonData = JSON.stringify(req.body);
-
-//     fs.writeFile("./db.txt", jsonData, (err) => {
-//         if (err) {
-//             console.error("Error writing to file:", err);
-//             return res.status(500).send("Error writing to file");
-//         }
-
-//         console.log("Data has been saved to file successfully.");
-//         res.status(200).send("Data has been saved to file successfully.");
-//     });
-// });
 app.post("/signup", function (req, res) {
     console.log(req.body);
   
@@ -80,10 +74,16 @@ app.post("/signup", function (req, res) {
       if (readError) {
         return res.status(500).send("Error reading file");
       }
+
+      // Check if the given username already exists in the existing data
+    const usernameExists = existingData.some((user) => user.username === req.body.username);
+
+    if (usernameExists) {
+      return res.status(401).send("Username already exists. Choose a different username.");
+    }
   
       // Push the new data to the existing data
       existingData.push(req.body);
-    // existingData.push(userData);
   
       writeToDBFile(existingData, (writeError) => {
         if (writeError) {
@@ -95,62 +95,12 @@ app.post("/signup", function (req, res) {
     });
   });
 
-// app.post("/signup", function(req, res) {
-//     console.log(req.body);
-
-//     saveData(req.body, function(err) {
-//         if(err){
-//             res.status(500).send("error");
-//             return;
-//         }
-//         res.status(200).send("success");
-//     })
-// });
 
 
 app.listen(3000, function () {
     console.log("Connection stablished");
 });
 
-// function readData(callback){
-//     fs.readFile("./db.txt", "utf-8", function(err, data) {
-//         if(err) {
-//             callback(err);
-//             return;
-//         }
-
-//         if(data.length === 0){
-//             data = "[]";
-//         }
-
-//         try{
-//             data = JSON.parse(data);
-//             callback(null, data);
-//         }catch(err){
-//             callback(err);
-//         }
-//     })
-// }
-
-// function saveData(dataComing, callback){
-//     readData(function (err, data) {
-//         if(err){
-//             callback(err);
-//             return;
-//         }
-
-//         data.push(dataComing);
-
-//         fs.writeFile("./db.txt", JSON.stringify(data), function(err) {
-//             if(err){
-//                 callback(err);
-//                 return;
-//             }
-
-//             callback(null);
-//         });
-//     });
-// }
 
 
 // Function to read data from the file

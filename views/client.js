@@ -50,13 +50,5 @@ document.getElementById('signup').addEventListener('submit', function (event) {
             alert("Something Went wrong");
         }
     });
-    // .then(function (response) {
-    //     if(response.status === 200){
-    //         console.log("its working");
-    //     }
-    //     else{
-    //         alert("something went wrong");
-    //     }
-    // });
   });
   
