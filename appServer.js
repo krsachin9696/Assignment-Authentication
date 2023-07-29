@@ -43,8 +43,6 @@ app.post("/login", function(req, res) {
         // Find the user with the given username and password in the existing data
         const user = existingData.find((user) => user.username === username && user.password === password);
     
-    // console.log(username);
-    // if(username === "shan" && password === "shan") {
         if(user) {
         // res.status(200).send("success");
         req.session.isLoggedIn = true;
