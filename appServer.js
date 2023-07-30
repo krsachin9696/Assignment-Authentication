@@ -100,6 +100,20 @@ app.post("/signup", function (req, res) {
   });
 
 
+  // Logout route
+app.post('/logout', (req, res) => {
+    // Clear the user session to log them out
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error destroying session:', err);
+        res.status(500).send('Error logging out');
+      } else {
+        res.sendStatus(200); // Send a success status to the client
+      }
+    });
+  });
+  
+
 
 app.listen(3000, function () {
     console.log("Connection stablished");

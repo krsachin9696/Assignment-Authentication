@@ -103,19 +103,33 @@ a:hover {
     <button class="logout-button" onclick="logout()">Logout</button>
   </div>
 
-  <!-- <script>
-    // JavaScript to handle the logout functionality
+
+
+
+  
+  <script>
     function logout() {
-      fetch('/logout', { method: 'POST' })
-        .then((response) => {
-          if (response.redirected) {
-            window.location.href = response.url;
-          }
-        })
-        .catch((error) => {
-          console.error('Error logging out:', error);
-        });
-    }
-  </script> -->
+    // Make a POST request to the server to invalidate the session or perform any other logout-related tasks
+    fetch("/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Logout successful, redirect to the login page or perform any other action
+          window.location.href = "/login"; // Replace "/login" with the URL of your login page
+        } else {
+          console.error("Logout failed:", response.status);
+          // Handle logout failure, display an error message, or perform any other appropriate action
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+  </script>
 </body>
 </html>
