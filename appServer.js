@@ -31,6 +31,10 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/views/login.html");
 });
 
+app.get("/login.js", function (req, res) {
+    res.sendFile(__dirname + "/views/login.js");
+});
+
 app.post("/login", function(req, res) {
     const username = req.body.username;
     const password = req.body.password;
@@ -50,8 +54,10 @@ app.post("/login", function(req, res) {
         res.redirect("/");
         return;
     }
-
-    res.status(401).send("error");
+    else {
+        res.status(401).json({ error: "Incorrect username or password" });
+    }
+    // res.status(401).send("error");
 });
 });
 
