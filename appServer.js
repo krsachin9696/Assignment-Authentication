@@ -50,7 +50,6 @@ app.post("/login", function(req, res) {
         const user = existingData.find((user) => user.username === username && user.password === password);
     
         if(user) {
-        // res.status(200).send("success");
         req.session.isLoggedIn = true;
         req.session.username = username;
         // res.redirect("/");
@@ -68,10 +67,6 @@ app.get("/signup", function (req, res) {
     // res.sendFile(__dirname + "/views/signup.html");
     res.render("signup", {error: null});
 });
-
-// app.get("/client.js", function (req, res) {
-//     res.sendFile(__dirname + "/views/client.js");
-// });
 
 
 
