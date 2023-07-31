@@ -88,7 +88,7 @@ app.post("/signup", function (req, res) {
 
     if (usernameExists) {
       // return res.status(401).send("Username already exists. Choose a different username.");
-      res.render("signup", {error: "username already exist. choose a different username."});
+      res.render("signup", {error: "username already exist."});
       return;
     }
   
@@ -100,7 +100,8 @@ app.post("/signup", function (req, res) {
           return res.status(500).send("Error writing to file");
         }
   
-        res.status(200).send("Data has been saved to file successfully.");
+        // res.status(200).send("Data has been saved to file successfully.");
+        res.render("login", {error: null});
       });
     });
   });
