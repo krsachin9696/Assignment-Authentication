@@ -35,6 +35,16 @@ app.get("/login", function (req, res) {
     res.render("login", {error: null});
 });
 
+// Route for rendering data.ejs separately to fetch data from data.json
+app.get("/data", function (req, res) {
+  readDataFromJson((readError, jsonData) => {
+    if (readError) {
+      return res.status(500).send("Error reading data.json");
+    }
+
+    res.render("data", { jsonData: jsonData });
+  });
+});
 
 
 app.post("/login", function(req, res) {
@@ -52,15 +62,17 @@ app.post("/login", function(req, res) {
         if(user) {
         req.session.isLoggedIn = true;
         req.session.username = username;
-        // res.redirect("/");
-        res.render("home", {username: req.session.username});
-        return;
-    }
-    else {
-        // res.status(401).json({ error: "Incorrect username or password" });
-        res.render("login" , {error: "Incorrect username or password"});
-    }
-});
+        readDataFromJson((dataReadError, jsonData) => {
+            if (dataReadError) {
+              return res.status(500).send("Error reading data.json");
+            }
+    
+            res.render("home", { username: req.session.username, jsonData: jsonData });
+          });
+        } else {
+          res.render("login", { error: "Incorrect username or password" });
+        }
+      });
 });
 
 app.get("/signup", function (req, res) {
@@ -160,3 +172,24 @@ function readFromDBFile(callback) {
     });
   }
 
+
+
+  // Function to read data from data.json
+function readDataFromJson(callback) {
+  fs.readFile("data.json", "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading data.json:", err);
+      return callback(err, null);
+    }
+
+    let jsonData;
+    try {
+      jsonData = JSON.parse(data);
+    } catch (parseError) {
+      console.error("Error parsing data from data.json:", parseError);
+      return callback(parseError, null);
+    }
+
+    return callback(null, jsonData);
+  });
+}
