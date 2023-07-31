@@ -24,7 +24,7 @@ const loginForm = document.getElementById("loginForm");
       .then((response) => {
         if (response.ok) {
           // Login successful, redirect to the homepage or perform any other action
-          window.location.href = "/"; // Replace "/" with the URL you want to redirect to after login
+          window.location.href = "/"; 
         } else {
           // Login failed, handle error message
           return response.json().then((data) => {
