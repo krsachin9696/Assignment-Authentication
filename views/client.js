@@ -20,8 +20,7 @@ document.getElementById('signup').addEventListener('submit', function (event) {
     }
 
     const form = event.target;
-    const formData = new FormData(form);
-  
+    
     const userData = {
       username, 
       password,

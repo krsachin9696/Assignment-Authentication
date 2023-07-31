@@ -26,7 +26,8 @@ app.get("/", function (req, res) {
         return;
     }
 
-    res.sendFile(__dirname + "/views/home.html");
+    // res.sendFile(__dirname + "/views/home.html");
+    res.render("home", {username: req.session.username});
 });
 
 app.get("/login", function (req, res) {
@@ -34,9 +35,7 @@ app.get("/login", function (req, res) {
     res.render("login", {error: null});
 });
 
-app.get("/login.js", function (req, res) {
-    res.sendFile(__dirname + "/views/login.js");
-});
+
 
 app.post("/login", function(req, res) {
     const username = req.body.username;
@@ -54,7 +53,8 @@ app.post("/login", function(req, res) {
         // res.status(200).send("success");
         req.session.isLoggedIn = true;
         req.session.username = username;
-        res.redirect("/");
+        // res.redirect("/");
+        res.render("home", {username: req.session.username});
         return;
     }
     else {
@@ -65,12 +65,13 @@ app.post("/login", function(req, res) {
 });
 
 app.get("/signup", function (req, res) {
-    res.sendFile(__dirname + "/views/signup.html");
+    // res.sendFile(__dirname + "/views/signup.html");
+    res.render("signup", {error: null});
 });
 
-app.get("/client.js", function (req, res) {
-    res.sendFile(__dirname + "/views/client.js");
-});
+// app.get("/client.js", function (req, res) {
+//     res.sendFile(__dirname + "/views/client.js");
+// });
 
 
 
@@ -86,7 +87,9 @@ app.post("/signup", function (req, res) {
     const usernameExists = existingData.some((user) => user.username === req.body.username);
 
     if (usernameExists) {
-      return res.status(401).send("Username already exists. Choose a different username.");
+      // return res.status(401).send("Username already exists. Choose a different username.");
+      res.render("signup", {error: "username already exist. choose a different username."});
+      return;
     }
   
       // Push the new data to the existing data
