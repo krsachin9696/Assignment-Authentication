@@ -1,8 +1,10 @@
 const express = require('express');
 const fs = require('fs');
-var session = require('express-session')
+var session = require('express-session');
+const { render } = require('ejs');
 
 const app = express();
+app.set("view engine", "ejs");
 
 app.use(session({                       // express-session is a middleware for Express that enables session management in your web application. 
     secret: 'kch bhi likh skte h ',             // It creates and maintains sessions for users, allowing you to store user-specific data across multiple requests.
@@ -28,7 +30,8 @@ app.get("/", function (req, res) {
 });
 
 app.get("/login", function (req, res) {
-    res.sendFile(__dirname + "/views/login.html");
+    // res.sendFile(__dirname + "/views/login.html");
+    res.render("login", {error: null});
 });
 
 app.get("/login.js", function (req, res) {
@@ -55,9 +58,9 @@ app.post("/login", function(req, res) {
         return;
     }
     else {
-        res.status(401).json({ error: "Incorrect username or password" });
+        // res.status(401).json({ error: "Incorrect username or password" });
+        res.render("login" , {error: "Incorrect username or password"});
     }
-    // res.status(401).send("error");
 });
 });
 
