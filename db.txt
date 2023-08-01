@@ -1,1 +1,0 @@
-[{"username":"bnb","password":"bnb","confirmpass":"bnb"},{"username":"mkl","password":"mkl","confirmpass":"mkl"},{"username":"vishal","password":"big","confirmpass":"big"},{"username":"rohit","password":"roo","confirmpass":"roo"},{"username":"jack","password":"iij","confirm-password":"iij"},{"username":"mick","password":"hell","confirm-password":"hell"}]

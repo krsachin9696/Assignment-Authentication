@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 var session = require('express-session');
 const { render } = require('ejs');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 const app = express();
 app.set("view engine", "ejs");
@@ -17,8 +19,9 @@ app.use(express.json());                    // The express.json() middleware is 
 
 app.use(express.urlencoded({extended: true })); // The express.urlencoded() middleware is used to parse URL-encoded data sent in the request body. 
                                                 // It allows you to access form data submitted via POST requests in your route handlers through req.body.
+app.use(upload.single("pic"));                // single means only one file/photo can be uploaded. and pic is the name of incoming file.
 
-
+app.use(express.static("uploads"));
 
 app.get("/", function (req, res) {
     if(!req.session.isLoggedIn) {
@@ -27,7 +30,7 @@ app.get("/", function (req, res) {
     }
 
     // res.sendFile(__dirname + "/views/home.html");
-    res.render("home", {username: req.session.username});
+    res.render("home", {username: req.session.username, profilepic: req.session.profilepic});
 });
 
 app.get("/login", function (req, res) {
@@ -47,33 +50,60 @@ app.get("/data", function (req, res) {
 });
 
 
-app.post("/login", function(req, res) {
-    const username = req.body.username;
-    const password = req.body.password;
+// app.post("/login", function(req, res) {
+//     const username = req.body.username;
+//     const password = req.body.password;
 
-    readFromDBFile((readError, existingData) => {
-        if (readError) {
-          return res.status(500).send("Error reading file");
-        }
+//     readFromDBFile((readError, existingData) => {
+//         if (readError) {
+//           return res.status(500).send("Error reading file");
+//         }
     
-        // Find the user with the given username and password in the existing data
-        const user = existingData.find((user) => user.username === username && user.password === password);
+//         // Find the user with the given username and password in the existing data
+//         const user = existingData.find((user) => user.username === username && user.password === password);
     
-        if(user) {
-        req.session.isLoggedIn = true;
-        req.session.username = username;
-        readDataFromJson((dataReadError, jsonData) => {
-            if (dataReadError) {
-              return res.status(500).send("Error reading data.json");
-            }
+//         if(user) {
+//         req.session.isLoggedIn = true;
+//         req.session.username = username;
+//         readDataFromJson((dataReadError, jsonData) => {
+//             if (dataReadError) {
+//               return res.status(500).send("Error reading data.json");
+//             }
     
-            res.render("home", { username: req.session.username, jsonData: jsonData });
-          });
-        } else {
-          res.render("login", { error: "Incorrect username or password" });
-        }
-      });
+//             res.render("home", { username: req.session.username, jsonData: jsonData });
+//           });
+//         } else {
+//           res.render("login", { error: "Incorrect username or password" });
+//         }
+//       });
+// });
+
+app.post("/login", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  getAllUsers(function (err, data) {
+    if (err) {
+      res.render("login", { error: "Something went wrong" });
+      return;
+    }
+
+    const user = data.find(function (user) {
+      return user.username === username && user.password === password;
+    });
+
+    if (user) {
+      req.session.isLoggedIn = true;
+      req.session.username = username;
+      req.session.profilepic = user.profilepic;
+      res.redirect("/");
+      return;
+    }
+
+    res.render("login", { error: "Invalid username or password" });
+  });
 });
+
 
 app.get("/signup", function (req, res) {
     // res.sendFile(__dirname + "/views/signup.html");
@@ -82,36 +112,58 @@ app.get("/signup", function (req, res) {
 
 
 
-app.post("/signup", function (req, res) {
-    console.log(req.body);
+// app.post("/signup", function (req, res) {
+//     console.log(req.body);
   
-    readFromDBFile((readError, existingData) => {
-      if (readError) {
-        return res.status(500).send("Error reading file");
-      }
+//     readFromDBFile((readError, existingData) => {
+//       if (readError) {
+//         return res.status(500).send("Error reading file");
+//       }
+//       // console.log(existingData);
+//       // Check if the given username already exists in the existing data
+//     const usernameExists = existingData.some((user) => user.username === req.body.username);
 
-      // Check if the given username already exists in the existing data
-    const usernameExists = existingData.some((user) => user.username === req.body.username);
+//     if (usernameExists) {
+//       // return res.status(401).send("Username already exists. Choose a different username.");
+//       res.render("signup", {error: "username already exist."});
+//       return;
+//     }
+  
+//       // Push the new data to the existing data
+//       existingData.push(req.body);
+  
+//       writeToDBFile(existingData, (writeError) => {
+//         if (writeError) {
+//           return res.status(500).send("Error writing to file");
+//         }
+  
+//         // res.status(200).send("Data has been saved to file successfully.");
+//         res.render("login", {error: null});
+//       });
+//     });
+//   });
 
-    if (usernameExists) {
-      // return res.status(401).send("Username already exists. Choose a different username.");
-      res.render("signup", {error: "username already exist."});
+app.post("/signup", function(req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+  const profilepic = req.file;
+
+  const user = {
+    username: username,
+    password: password,
+    profilepic: profilepic.filename,
+  };
+
+  saveUser(user, function (err) {
+    if (err) {
+      res.render("signup", {error: "Something went wrong"});
       return;
     }
-  
-      // Push the new data to the existing data
-      existingData.push(req.body);
-  
-      writeToDBFile(existingData, (writeError) => {
-        if (writeError) {
-          return res.status(500).send("Error writing to file");
-        }
-  
-        // res.status(200).send("Data has been saved to file successfully.");
-        res.render("login", {error: null});
-      });
-    });
+
+    res.redirect("/login");
   });
+});
+
 
 
   // Logout route
@@ -191,5 +243,46 @@ function readDataFromJson(callback) {
     }
 
     return callback(null, jsonData);
+  });
+}
+
+
+function saveUser(user, callback) {
+  getAllUsers(function (err, data) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    data.push(user);
+
+    fs.writeFile("./users.apk", JSON.stringify(data), function (err) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(null);
+    });
+  });
+}
+
+function getAllUsers(callback) {
+  fs.readFile("./users.apk", "utf-8", function (err, data) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    if (data.length === 0) {
+      data = "[]";
+    }
+
+    try {
+      data = JSON.parse(data);
+      callback(null, data);
+    } catch (err) {
+      callback([]);
+    }
   });
 }

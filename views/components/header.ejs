@@ -1,0 +1,150 @@
+<style>
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form {
+  width: 300px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+    /* Additional CSS specific to the home page */
+    .container {
+      width: 400px;
+      margin: 100px auto;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .greeting {
+      text-align: center;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .logout-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #ff5252;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .logout-button:hover {
+      background-color: #e02424;
+    }
+    /* Profile pic.......................................... */
+    .profile-pic {
+        text-align: center;
+        margin-bottom: 20px;
+        }
+
+        .profile-pic img {
+        width: 150px; /* Adjust the width as needed */
+        height: 150px; /* Adjust the height as needed */
+        border-radius: 50%;
+        border: 2px solid #4CAF50; /* Add a border around the profile picture */
+        object-fit: cover; /* Preserve aspect ratio and cover the container */
+        }
+    /* ------------------------------------------------ */
+    /* Reset default margin and padding for better consistency */
+body, ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the navigation bar */
+nav {
+  background-color: #333;
+  padding: 10px;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+li {
+  margin-right: 20px;
+}
+
+/* Style the links */
+a {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+/* Change link color on hover */
+a:hover {
+  background-color: #555;
+}
+
+</style>
+
+
+<div class="container">
+    <h2>Welcome to the Home Page</h2>
+    <div class="profile-pic">
+        <img src= "<%= profilepic %>" alt="Profile Picture">
+      </div>
+    <p class="greeting">Hello, <%= username %>!</p>
+    <button class="logout-button" onclick="logout()">Logout</button>
+  </div> 
